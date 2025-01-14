@@ -111,7 +111,6 @@ class AdminActivity : AppCompatActivity() {
             .setNegativeButton("No") { dialog, id ->
                 // Dismiss the dialog, do nothing
                 dialog.dismiss()
-                // No need to call super.onBackPressed() here
             }
 
         val alert = builder.create()
