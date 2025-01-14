@@ -1,67 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.widget.ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_margin="20dp"
-    android:gravity="center"
-    tools:context=".reporter.ReporterActivity">
+    android:layout_height="match_parent">
 
-    <!-- Title EditText -->
-    <EditText
-        android:id="@+id/et_Title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Title"
-        android:inputType="text"
-        android:layout_marginTop="32dp" />
+        android:orientation="vertical"
+        android:layout_margin="20dp"
+        android:gravity="center"
+        tools:context=".reporter.ReporterActivity">
 
-    <!-- Category Spinner -->
-    <Spinner
-        android:id="@+id/spinnerCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
+        <!-- Title EditText -->
+        <EditText
+            android:id="@+id/et_Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Title"
+            android:inputType="text"
+            android:layout_marginTop="32dp" />
 
-    <!-- Description EditText -->
-    <EditText
-        android:id="@+id/et_Description"
-        android:layout_width="match_parent"
-        android:layout_height="350dp"
-        android:hint="Description"
-        android:inputType="textMultiLine"
-        android:layout_marginTop="16dp" />
+        <!-- Category Spinner -->
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
 
-    <!-- Image Upload Button -->
-    <Button
-        android:id="@+id/btn_UploadImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Upload Image"
-        android:layout_marginTop="16dp" />
+        <!-- Description EditText -->
+        <EditText
+            android:id="@+id/et_Description"
+            android:layout_width="match_parent"
+            android:layout_height="230dp"
+            android:hint="Description"
+            android:inputType="textMultiLine"
+            android:layout_marginTop="16dp" />
 
-    <!-- Image Preview -->
-    <ImageView
-        android:id="@+id/img_Preview"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="16dp" />
+        <!-- Image Upload Button -->
+        <Button
+            android:id="@+id/btn_UploadImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Upload Image"
+            android:layout_marginTop="16dp" />
 
-    <!-- Submit Button -->
-    <Button
-        android:id="@+id/btn_Submit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Submit"
-        android:layout_marginTop="32dp" />
+        <!-- Image Preview -->
+        <ImageView
+            android:id="@+id/img_Preview"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="16dp" />
 
-    <!-- Logout Button -->
-    <Button
-        android:id="@+id/btn_logout"
-        android:text="Logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"/>
-</LinearLayout>
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/btn_Submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit"
+            android:layout_marginTop="32dp" />
+
+        <!-- Logout Button -->
+        <Button
+            android:id="@+id/btn_logout"
+            android:text="Logout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"/>
+    </LinearLayout>
+</android.widget.ScrollView>
