@@ -39,6 +39,7 @@ class AdminActivity : AppCompatActivity() {
         roleSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roles)
 
         // Add New User Button Click
+        // Add New User Button Click
         addUserButton.setOnClickListener {
             val email = newUserEmailEditText.text.toString().trim()
             val password = newUserPasswordEditText.text.toString().trim()
@@ -49,33 +50,32 @@ class AdminActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // Creating a new user account with Firebase Authentication
+            // Create a user in Firebase Authentication and set the role in the Realtime Database
+            val auth = FirebaseAuth.getInstance()
             auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    val userId = auth.currentUser?.uid
-                    userId?.let {
-                        // Do not log the new user in, just create in Firebase Database
-                        database.reference.child("users").child(it).setValue(
-                            mapOf("email" to email, "role" to role)
-                        ).addOnSuccessListener {
-                            Toast.makeText(this, "User Added Successfully", Toast.LENGTH_SHORT).show()
-                            fetchAllUsers()
-
-                            // Explicitly sign out the newly created user
-                            auth.signOut()
-
-                            // Clear the EditText fields after adding the user
-                            newUserEmailEditText.setText("")
-                            newUserPasswordEditText.setText("")
-                        }
+                    val userId = task.result?.user?.uid
+                    if (userId != null) {
+                        // Set the user role in the Firebase Database
+                        val userMap = mapOf("email" to email, "role" to role)
+                        FirebaseDatabase.getInstance().reference.child("users").child(userId).setValue(userMap)
+                            .addOnCompleteListener { dbTask ->
+                                if (dbTask.isSuccessful) {
+                                    Toast.makeText(this, "User Added Successfully", Toast.LENGTH_SHORT).show()
+                                    fetchAllUsers()
+                                    newUserEmailEditText.setText("")
+                                    newUserPasswordEditText.setText("")
+                                    auth.signOut()
+                                } else {
+                                    Toast.makeText(this, "Failed to add user to database", Toast.LENGTH_SHORT).show()
+                                }
+                            }
                     }
                 } else {
-                    Toast.makeText(this, "Failed to Add User", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Failed to create user", Toast.LENGTH_SHORT).show()
                 }
             }
         }
-
-
 
         // Logout Button Click
         logoutButton.setOnClickListener {
