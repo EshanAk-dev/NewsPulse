@@ -16,8 +16,9 @@ class AdminActivity : AppCompatActivity() {
     private lateinit var database: FirebaseDatabase
     private lateinit var roleSpinner: Spinner
     private lateinit var usersListView: ListView
-    private lateinit var usersListAdapter: ArrayAdapter<String>
-    private val userList = mutableListOf<String>()
+    private lateinit var usersListAdapter: ArrayAdapter<Pair<String, String>> // Stores email and UID
+    private val userList = mutableListOf<Pair<String, String>>() // email and UID
+    private val userRoles = mutableMapOf<String, String>() // Mapping userId to their role
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +38,6 @@ class AdminActivity : AppCompatActivity() {
         val roles = arrayOf("admin", "editor", "reporter")
         roleSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roles)
 
-        // Setting up ListView Adapter
-        usersListAdapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, userList)
-        usersListView.adapter = usersListAdapter
-
         // Add New User Button Click
         addUserButton.setOnClickListener {
             val email = newUserEmailEditText.text.toString().trim()
@@ -57,11 +54,19 @@ class AdminActivity : AppCompatActivity() {
                 if (task.isSuccessful) {
                     val userId = auth.currentUser?.uid
                     userId?.let {
+                        // Do not log the new user in, just create in Firebase Database
                         database.reference.child("users").child(it).setValue(
                             mapOf("email" to email, "role" to role)
                         ).addOnSuccessListener {
                             Toast.makeText(this, "User Added Successfully", Toast.LENGTH_SHORT).show()
                             fetchAllUsers()
+
+                            // Explicitly sign out the newly created user
+                            auth.signOut()
+
+                            // Clear the EditText fields after adding the user
+                            newUserEmailEditText.setText("")
+                            newUserPasswordEditText.setText("")
                         }
                     }
                 } else {
@@ -69,6 +74,8 @@ class AdminActivity : AppCompatActivity() {
                 }
             }
         }
+
+
 
         // Logout Button Click
         logoutButton.setOnClickListener {
@@ -82,23 +89,85 @@ class AdminActivity : AppCompatActivity() {
     // Function to Fetch Only Admin, Reporter, and Editor Users
     private fun fetchAllUsers() {
         userList.clear()
+        userRoles.clear() // Clear the userRoles map
+
         database.reference.child("users").get().addOnSuccessListener { dataSnapshot ->
             for (user in dataSnapshot.children) {
                 val email = user.child("email").value.toString()
                 val role = user.child("role").value.toString()
+                val userId = user.key.toString()
 
                 // Show only admin, reporter, and editor roles
                 if (role == "admin" || role == "reporter" || role == "editor") {
-                    userList.add("$email - $role")
+                    userList.add(Pair(userId, email))  // Add userId and email to the list
+                    userRoles[userId] = role          // Store the role with userId as the key
                 }
             }
-            usersListAdapter.notifyDataSetChanged()
+
+            // Create a custom adapter for displaying user data with delete button
+            usersListAdapter = object : ArrayAdapter<Pair<String, String>>(this, R.layout.list_item_user, userList) {
+                override fun getView(position: Int, convertView: android.view.View?, parent: android.view.ViewGroup): android.view.View {
+                    var view = convertView
+                    if (view == null) {
+                        view = layoutInflater.inflate(R.layout.list_item_user, parent, false)
+                    }
+
+                    val user = userList[position]
+                    val userEmailTextView = view?.findViewById<TextView>(R.id.tv_userEmail)
+                    val userRoleTextView = view?.findViewById<TextView>(R.id.tv_userRole)
+                    val deleteButton = view?.findViewById<Button>(R.id.btn_deleteUser)
+
+                    userEmailTextView?.text = user.second // Set email
+                    userRoleTextView?.text = userRoles[user.first] // Get and set role based on userId
+                    deleteButton?.setOnClickListener {
+                        deleteUser(user.first)  // pass userId to delete user
+                    }
+
+                    return view!!
+                }
+            }
+
+            usersListView.adapter = usersListAdapter
         }.addOnFailureListener {
             Toast.makeText(this, "Failed to load users", Toast.LENGTH_SHORT).show()
         }
     }
 
-    // Override the back button press to show a confirmation dialog
+    // Function to delete a user
+    private fun deleteUser(userId: String) {
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Are you sure you want to delete this user?")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { dialog, id ->
+                // Check if trying to delete the currently authenticated user
+                val currentUser = FirebaseAuth.getInstance().currentUser
+                if (currentUser?.uid == userId) {
+                    Toast.makeText(this, "You cannot delete your own account", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                // Proceed to delete the user from Firebase Database
+                database.reference.child("users").child(userId).removeValue()
+                    .addOnSuccessListener {
+                        Toast.makeText(this, "User Deleted Successfully", Toast.LENGTH_SHORT).show()
+                        fetchAllUsers()  // Refresh the list
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(this, "Failed to Delete User from Database", Toast.LENGTH_SHORT).show()
+                    }
+
+                // Deleting the user from Firebase Authentication requires Cloud Functions or Admin SDK
+                // You can't delete other users directly from client-side Firebase Auth API
+            }
+            .setNegativeButton("No") { dialog, id ->
+                dialog.dismiss()
+            }
+
+        val alert = builder.create()
+        alert.show()
+    }
+
+    // Ask to logout when press the back button
     override fun onBackPressed() {
         // Create a confirmation dialog
         val builder = AlertDialog.Builder(this)
@@ -117,8 +186,6 @@ class AdminActivity : AppCompatActivity() {
         alert.show()
     }
 
-
-
     // Function to logout the user
     private fun logoutUser() {
         auth.signOut()
@@ -127,3 +194,4 @@ class AdminActivity : AppCompatActivity() {
         finish()
     }
 }
+
