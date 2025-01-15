@@ -46,13 +46,9 @@ class LoginActivity : AppCompatActivity() {
                             .addOnSuccessListener { dataSnapshot ->
                                 val role = dataSnapshot.child("role").value.toString()
                                 when (role) {
-                                    // If role == admin to AdminActivity
                                     "admin" -> startActivity(Intent(this, AdminActivity::class.java))
-                                    // If role == reporter to ReporterActivity
                                     "reporter" -> startActivity(Intent(this, ReporterActivity::class.java))
-                                    // If role == editor to EditorActivity
                                     "editor" -> startActivity(Intent(this, EditorActivity::class.java))
-                                    // This for other roles(user)
                                     else -> startActivity(Intent(this, UserActivity::class.java))
                                 }
                                 finish()
@@ -64,9 +60,14 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        // New: Redirect to RegisterActivity when clicking the TextView
+        // Redirect to RegisterActivity when clicking the TextView
         registerTextView.setOnClickListener {
             startActivity(Intent(this, RegisterActivity::class.java))
         }
+    }
+
+    override fun onBackPressed() {
+        startActivity(Intent(this, MainActivity::class.java))
+        finish()
     }
 }
