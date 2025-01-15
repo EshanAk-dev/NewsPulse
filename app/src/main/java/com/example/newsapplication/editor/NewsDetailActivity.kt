@@ -1,5 +1,6 @@
 package com.example.newsapplication.editor
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
@@ -58,20 +59,28 @@ class NewsDetailActivity : AppCompatActivity() {
                 .into(imgNews)
         }
 
-        // Handle Publish Button click
+        // Handle Publish Button click with confirmation dialog
         btnPublish.setOnClickListener {
-            news?.let {
-                it.status = "published"  // Update status to published
+            val alertDialog = AlertDialog.Builder(this)
+                .setTitle("Publish News")
+                .setMessage("Are you sure you want to publish this news?")
+                .setPositiveButton("Yes") { _, _ ->
+                    news?.let {
+                        it.status = "published"
 
-                val newsRef = FirebaseDatabase.getInstance().getReference("news")
-                newsRef.child(it.newsId).setValue(it)
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "News published successfully", Toast.LENGTH_SHORT).show()
+                        val newsRef = FirebaseDatabase.getInstance().getReference("news")
+                        newsRef.child(it.newsId).setValue(it)
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "News published successfully", Toast.LENGTH_SHORT).show()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Failed to publish news", Toast.LENGTH_SHORT).show()
+                            }
                     }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Failed to publish news", Toast.LENGTH_SHORT).show()
-                    }
-            }
+                }
+                .setNegativeButton("No", null)
+                .create()
+            alertDialog.show()
         }
 
         // Handle Edit Button click
@@ -81,19 +90,27 @@ class NewsDetailActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        // Handle Delete Button click
+        // Handle Delete Button click with confirmation dialog
         btnDelete.setOnClickListener {
-            news?.let {
-                val newsRef = FirebaseDatabase.getInstance().getReference("news")
-                newsRef.child(it.newsId).removeValue()
-                    .addOnSuccessListener {
-                        Toast.makeText(this, "News deleted successfully", Toast.LENGTH_SHORT).show()
-                        finish() // Close the current activity and return to the previous screen
+            val alertDialog = AlertDialog.Builder(this)
+                .setTitle("Delete News")
+                .setMessage("Are you sure you want to delete this news?")
+                .setPositiveButton("Yes") { _, _ ->
+                    news?.let {
+                        val newsRef = FirebaseDatabase.getInstance().getReference("news")
+                        newsRef.child(it.newsId).removeValue()
+                            .addOnSuccessListener {
+                                Toast.makeText(this, "News deleted successfully", Toast.LENGTH_SHORT).show()
+                                finish()
+                            }
+                            .addOnFailureListener {
+                                Toast.makeText(this, "Failed to delete news", Toast.LENGTH_SHORT).show()
+                            }
                     }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Failed to delete news", Toast.LENGTH_SHORT).show()
-                    }
-            }
+                }
+                .setNegativeButton("No", null)
+                .create()
+            alertDialog.show()
         }
     }
 }
