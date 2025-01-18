@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <!-- Primary Color (used for app bars, buttons, etc.) -->
+    <color name="colorPrimary">#1C1C1C</color> <!-- Dark Gray for a sleek, modern look -->
+
+    <!-- Darker Primary Color (used for status bars, navigation bars, etc.) -->
+    <color name="colorPrimaryDark">#000000</color> <!-- Black for a strong, bold accent -->
+
+    <!-- Optional: Accent Color -->
+    <color name="colorAccent">#0D47A1</color> <!-- Bright Pink for a pop of color in buttons, links -->
+</resources>

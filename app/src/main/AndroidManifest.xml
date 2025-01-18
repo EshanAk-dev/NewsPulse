@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Required for reading from external storage -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Required for writing to external storage (only if you're using external storage) -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" /> <!-- Internet Permission for Firebase and image uploads -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- For checking network state -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.NewsApplication"
+        tools:targetApi="31">
+        <activity
+            android:name=".user.CategoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".user.UserNewsDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".editor.EditNewsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".editor.NewsDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".editor.EditorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".reporter.ReporterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.AdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".user.UserActivity"
+            android:exported="false" />
+        <activity
+            android:name=".LoginActivity"
+            android:exported="false"/>
+        <activity
+            android:name=".RegisterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

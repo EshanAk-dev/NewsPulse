@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp"
+    android:gravity="center"
+    tools:context=".reporter.ReporterActivity">
+
+    <TextView
+        android:text="Reporter Section"
+        android:textSize="24sp"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:fontFamily="sans-serif-medium"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:shadowColor="@android:color/darker_gray"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="3"
+        android:padding="5dp" />
+
+    <!-- Title EditText -->
+    <EditText
+        android:id="@+id/et_Title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Title"
+        android:inputType="text"
+        android:padding="16dp"
+        android:background="@drawable/edittext_background2" />
+
+    <!-- Category Label and Spinner -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tv_CategoryLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Category :"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@android:color/black"
+            android:layout_marginEnd="8dp" />
+
+        <Spinner
+            android:id="@+id/spinnerCategory"
+            android:layout_width="0dp"
+            android:textAlignment="center"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+
+    <!-- Description EditText -->
+    <EditText
+        android:id="@+id/et_Description"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        android:hint="Description"
+        android:inputType="textMultiLine|textCapSentences"
+        android:gravity="top|start"
+        android:scrollbars="vertical"
+        android:overScrollMode="always"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/edittext_background2"
+        android:padding="8dp"
+        android:scrollHorizontally="false"
+        android:imeOptions="actionNone" />
+
+    <!-- Image Upload Button -->
+    <Button
+        android:id="@+id/btn_UploadImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Upload Image"
+        android:layout_marginTop="16dp" />
+
+    <!-- Image Preview -->
+    <ImageView
+        android:id="@+id/img_Preview"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
+        android:scaleType="fitXY"
+        android:clipToOutline="true"
+        android:background="@drawable/rounded_border" />
+
+    <!-- Submit Button -->
+    <Button
+        android:id="@+id/btn_Submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit News"
+        android:backgroundTint="@android:color/holo_green_dark"
+        android:layout_marginTop="32dp" />
+
+    <!-- Logout Button -->
+    <Button
+        android:id="@+id/btn_logout"
+        android:text="Logout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="16dp" />
+</LinearLayout>

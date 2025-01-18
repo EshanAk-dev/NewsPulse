@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- Logo Image -->
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="250dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginBottom="116dp"
+        android:layout_gravity="center"
+        android:src="@drawable/logo"/>
+
+    <!-- Welcome Text -->
+    <TextView
+        android:text="Welcome to NewsPulse"
+        android:textSize="30sp"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:shadowColor="@android:color/darker_gray"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="2"
+        android:gravity="center"
+        android:padding="16dp"/>
+
+    <!-- App Description -->
+    <TextView
+        android:text="Stay informed with the latest news articles, curated just for you. Join NewsPulse for reliable updates from around the world!"
+        android:textSize="17sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:gravity="center"
+        android:layout_marginBottom="24dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+        <!-- Login Button -->
+        <Button
+            android:id="@+id/btn_login"
+            android:text="Get Started"
+            android:textColor="@android:color/white"
+            android:textSize="17sp"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_background"
+            android:layout_gravity="center"
+            android:padding="16dp"/>
+</LinearLayout>
