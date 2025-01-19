@@ -13,6 +13,8 @@ import com.bumptech.glide.Glide
 import com.example.newsapplication.News
 import com.example.newsapplication.R
 import com.google.firebase.database.FirebaseDatabase
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NewsDetailActivity : AppCompatActivity() {
 
@@ -24,6 +26,7 @@ class NewsDetailActivity : AppCompatActivity() {
     private lateinit var btnPublish: Button
     private lateinit var btnEdit: Button
     private lateinit var btnDelete: Button
+    private lateinit var tvPublishTime: TextView // TextView for publish time
 
     private var news: News? = null
 
@@ -41,6 +44,7 @@ class NewsDetailActivity : AppCompatActivity() {
         btnPublish = findViewById(R.id.btn_Publish)
         btnEdit = findViewById(R.id.btn_Edit)
         btnDelete = findViewById(R.id.btn_Delete)
+        tvPublishTime = findViewById(R.id.tv_PublishTime) // Initialize the new TextView
 
         // Retrieve the news object passed from the previous activity
         news = intent.getSerializableExtra("news") as? News
@@ -60,12 +64,23 @@ class NewsDetailActivity : AppCompatActivity() {
                 .load(it.imageUrl)
                 .into(imgNews)
 
+            // Check if the news is published and display the appropriate message
+            if (it.status == "published") {
+                // Format the timestamp to a readable date/time
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val formattedDate = dateFormat.format(Date(it.timestamp))
+                tvPublishTime.text = "Published at: $formattedDate"
+            } else {
+                tvPublishTime.text = "Not published yet"
+            }
+
             // Disable the Publish button if the news is already published
             if (it.status == "published") {
                 btnPublish.isEnabled = false
                 btnPublish.text = "Already Published"
             }
         }
+
 
         // Handle Publish Button click with confirmation dialog
         btnPublish.setOnClickListener {
@@ -75,6 +90,7 @@ class NewsDetailActivity : AppCompatActivity() {
                 .setPositiveButton("Yes") { _, _ ->
                     news?.let {
                         it.status = "published"
+                        it.timestamp = System.currentTimeMillis() // Update timestamp on publish
 
                         val newsRef = FirebaseDatabase.getInstance().getReference("news")
                         newsRef.child(it.newsId).setValue(it)
@@ -122,3 +138,4 @@ class NewsDetailActivity : AppCompatActivity() {
         }
     }
 }
+
