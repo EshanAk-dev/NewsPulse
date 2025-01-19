@@ -43,6 +43,18 @@ class UserActivity : AppCompatActivity() {
         findViewById<ImageView>(R.id.icon_sports).setOnClickListener {
             navigateToCategoryActivity("Sports", "user")
         }
+        findViewById<ImageView>(R.id.icon_science).setOnClickListener {
+            navigateToCategoryActivity("Science", "user")
+        }
+        findViewById<ImageView>(R.id.icon_technology).setOnClickListener {
+            navigateToCategoryActivity("Technology", "user")
+        }
+        findViewById<ImageView>(R.id.icon_entertainment).setOnClickListener {
+            navigateToCategoryActivity("Entertainment", "user")
+        }
+        findViewById<ImageView>(R.id.icon_lifestyle).setOnClickListener {
+            navigateToCategoryActivity("Lifestyle", "user")
+        }
 
         // Initialize Logout button
         logoutButton = findViewById(R.id.btn_logout)
