@@ -53,7 +53,7 @@ class ReporterActivity : AppCompatActivity() {
         logoutButton = findViewById(R.id.btn_logout)
 
         // Set up the Spinner with categories
-        val categories = arrayOf("Local", "International", "Business", "Sports")
+        val categories = arrayOf("Local", "International", "Business", "Sports", "Science", "Technology", "Entertainment", "Lifestyle")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinnerCategory.adapter = adapter
