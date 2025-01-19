@@ -195,7 +195,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <!-- Row 3: Entertainment News and Lifestyle News Icons -->
+        <!-- Row 4: Entertainment News and Lifestyle News Icons -->
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
