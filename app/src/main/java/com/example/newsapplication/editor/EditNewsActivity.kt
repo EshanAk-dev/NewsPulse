@@ -32,7 +32,7 @@ class EditNewsActivity : AppCompatActivity() {
         btnSave = findViewById(R.id.btn_Save)
 
         // Create a list of categories for the Spinner
-        val categories = listOf("Local", "International", "Business", "Sports")
+        val categories = listOf("Local", "International", "Business", "Sports", "Science", "Technology", "Entertainment", "Lifestyle")
 
         // Set up the Spinner with an ArrayAdapter
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
