@@ -10,5 +10,6 @@ data class News(
     val imageUrl: String = "",
     val newsId: String = UUID.randomUUID().toString(),
     val reporterEmail: String = "",
-    var status: String = "" // Add the published status
+    var status: String = "", // Add the published status
+    var timestamp: Long = System.currentTimeMillis() // Add the timestamp
 ) : Serializable
