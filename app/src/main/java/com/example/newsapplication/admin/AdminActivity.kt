@@ -39,8 +39,7 @@ class AdminActivity : AppCompatActivity() {
         // Spinner for selecting roles
         val roles = arrayOf("admin", "editor", "reporter")
         roleSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roles)
-
-        // Add New User Button Click
+        
         // Add New User Button Click
         addUserButton.setOnClickListener {
             val email = newUserEmailEditText.text.toString().trim()
@@ -102,7 +101,7 @@ class AdminActivity : AppCompatActivity() {
                 // Show only admin, reporter, and editor roles
                 if (role == "admin" || role == "reporter" || role == "editor") {
                     userList.add(Pair(userId, email))  // Add userId and email to the list
-                    userRoles[userId] = role          // Store the role with userId as the key
+                    userRoles[userId] = role // Store the role with userId as the key
                 }
             }
 
@@ -122,7 +121,7 @@ class AdminActivity : AppCompatActivity() {
                     userEmailTextView?.text = user.second // Set email
                     userRoleTextView?.text = userRoles[user.first] // Get and set role based on userId
                     deleteButton?.setOnClickListener {
-                        deleteUser(user.first)  // pass userId to delete user
+                        deleteUser(user.first)  // Pass userId to delete user
                     }
 
                     return view!!
@@ -157,9 +156,6 @@ class AdminActivity : AppCompatActivity() {
                     .addOnFailureListener {
                         Toast.makeText(this, "Failed to Delete User from Database", Toast.LENGTH_SHORT).show()
                     }
-
-                // Deleting the user from Firebase Authentication requires Cloud Functions or Admin SDK
-                // You can't delete other users directly from client-side Firebase Auth API
             }
             .setNegativeButton("No") { dialog, id ->
                 dialog.dismiss()
