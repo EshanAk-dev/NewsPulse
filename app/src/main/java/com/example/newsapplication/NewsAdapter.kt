@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.newsapplication.editor.NewsDetailActivity
 import com.example.newsapplication.user.UserNewsDetailsActivity
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NewsAdapter(
     private val newsList: List<News>,
@@ -33,11 +35,20 @@ class NewsAdapter(
     inner class NewsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvTitle: TextView = itemView.findViewById(R.id.tv_Title)
         private val tvCategory: TextView = itemView.findViewById(R.id.tv_Category)
+        private val tvTime: TextView = itemView.findViewById(R.id.tv_Time) // Added time TextView
         private val imgPreview: ImageView = itemView.findViewById(R.id.img_Preview)
 
         fun bind(news: News) {
             tvTitle.text = news.title
             tvCategory.text = news.category
+
+            // Check if the news is published and display the message
+            val formattedTime = if (news.status == "published") {
+                formatTimestamp(news.timestamp)
+            } else {
+                "Not published yet"
+            }
+            tvTime.text = formattedTime
 
             // Load image using Glide
             Glide.with(itemView.context)
@@ -55,5 +66,11 @@ class NewsAdapter(
                 itemView.context.startActivity(intent)
             }
         }
+
+        private fun formatTimestamp(timestamp: Long): String {
+            val sdf = SimpleDateFormat("MMM dd, yyyy, hh:mm a", Locale.getDefault())
+            return sdf.format(Date(timestamp))
+        }
     }
 }
+
