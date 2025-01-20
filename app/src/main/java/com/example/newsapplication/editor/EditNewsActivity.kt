@@ -8,6 +8,7 @@ import android.widget.Spinner
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.example.newsapplication.DividerSpinnerAdapter
 import com.example.newsapplication.News
 import com.example.newsapplication.R
 import com.google.firebase.database.FirebaseDatabase
@@ -33,11 +34,10 @@ class EditNewsActivity : AppCompatActivity() {
 
         // Create a list of categories for the Spinner
         val categories = listOf("Local", "International", "Business", "Sports", "Science", "Technology", "Entertainment", "Lifestyle")
+        val adapter = DividerSpinnerAdapter(this, R.layout.spinner_item_with_divider, categories.toTypedArray()) // Use the custom DividerSpinnerAdapter for the Spinner
 
-        // Set up the Spinner with an ArrayAdapter
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerCategory.adapter = adapter
+        spinnerCategory.adapter = adapter // Set the adapter to the Spinner
+
 
         // Retrieve the news object passed from the previous activity
         news = intent.getSerializableExtra("news") as? News
@@ -68,7 +68,7 @@ class EditNewsActivity : AppCompatActivity() {
                     newsRef.child(newsItem.newsId).setValue(newsItem)
                         .addOnSuccessListener {
                             Toast.makeText(this, "News updated successfully", Toast.LENGTH_SHORT).show()
-                            finish() // Close the EditNewsActivity and return to the previous screen
+                            finish()
                         }
                         .addOnFailureListener {
                             Toast.makeText(this, "Failed to update news", Toast.LENGTH_SHORT).show()
