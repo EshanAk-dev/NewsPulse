@@ -6,6 +6,7 @@ import android.widget.*
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AlertDialog
+import com.example.newsapplication.DividerSpinnerAdapter
 import com.example.newsapplication.LoginActivity
 import com.example.newsapplication.R
 import com.google.firebase.auth.FirebaseAuth
@@ -38,8 +39,11 @@ class AdminActivity : AppCompatActivity() {
 
         // Spinner for selecting roles
         val roles = arrayOf("admin", "editor", "reporter")
-        roleSpinner.adapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, roles)
-        
+        val roleAdapter = DividerSpinnerAdapter(this, R.layout.spinner_item_with_divider, roles) // Use the custom DividerSpinnerAdapter for the Spinner
+
+        roleSpinner.adapter = roleAdapter // Set the adapter to the Spinner
+
+
         // Add New User Button Click
         addUserButton.setOnClickListener {
             val email = newUserEmailEditText.text.toString().trim()
@@ -101,7 +105,7 @@ class AdminActivity : AppCompatActivity() {
                 // Show only admin, reporter, and editor roles
                 if (role == "admin" || role == "reporter" || role == "editor") {
                     userList.add(Pair(userId, email))  // Add userId and email to the list
-                    userRoles[userId] = role // Store the role with userId as the key
+                    userRoles[userId] = role          // Store the role with userId as the key
                 }
             }
 
@@ -121,7 +125,7 @@ class AdminActivity : AppCompatActivity() {
                     userEmailTextView?.text = user.second // Set email
                     userRoleTextView?.text = userRoles[user.first] // Get and set role based on userId
                     deleteButton?.setOnClickListener {
-                        deleteUser(user.first)  // Pass userId to delete user
+                        deleteUser(user.first)  // pass userId to delete user
                     }
 
                     return view!!
@@ -192,4 +196,3 @@ class AdminActivity : AppCompatActivity() {
         finish()
     }
 }
-
