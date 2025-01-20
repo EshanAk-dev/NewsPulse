@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.newsapplication.DividerSpinnerAdapter
 import com.example.newsapplication.LoginActivity
 import com.example.newsapplication.News
 import com.example.newsapplication.R
@@ -30,6 +31,7 @@ class ReporterActivity : AppCompatActivity() {
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val storage: FirebaseStorage = FirebaseStorage.getInstance()
 
+    // Select an image from device
     private val selectImage =
         registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
@@ -54,15 +56,16 @@ class ReporterActivity : AppCompatActivity() {
 
         // Set up the Spinner with categories
         val categories = arrayOf("Local", "International", "Business", "Sports", "Science", "Technology", "Entertainment", "Lifestyle")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categories)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerCategory.adapter = adapter
+        val adapter = DividerSpinnerAdapter(this, R.layout.spinner_item_with_divider, categories) // Use the custom DividerSpinnerAdapter for the Spinner
 
+        spinnerCategory.adapter = adapter // Set the adapter to the Spinner
+
+        // Setup Upload Image button
         btnUploadImage.setOnClickListener {
             selectImage.launch("image/*")
         }
 
-        // Set click listener with dialog box
+        // Set click listener with dialog box for Submit Button
         btnSubmit.setOnClickListener {
             val builder = AlertDialog.Builder(this)
             builder.setMessage("Are you sure you want to submit this news?")
@@ -90,13 +93,13 @@ class ReporterActivity : AppCompatActivity() {
         }
     }
 
+    // Upload news image to firebase storage and save news details
     private fun uploadNewsToFirebase(title: String, category: String, description: String) {
-        val newsRef = storage.reference.child("news_images/${UUID.randomUUID()}.jpg")
+        val newsRef = storage.reference.child("news_images/${UUID.randomUUID()}.jpg") // Use UUID to name the image
 
         val uploadTask = selectedImageUri?.let {
             newsRef.putFile(it)
         }
-
         uploadTask?.addOnSuccessListener {
             newsRef.downloadUrl.addOnSuccessListener { uri ->
                 val imageUrl = uri.toString()
@@ -114,6 +117,7 @@ class ReporterActivity : AppCompatActivity() {
         }
     }
 
+    // Upload news object to firebase database
     private fun saveNewsToDatabase(news: News, newsId: String) {
         val newsRef = FirebaseDatabase.getInstance().getReference("news")
 
