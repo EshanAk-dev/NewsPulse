@@ -105,7 +105,7 @@ class AdminActivity : AppCompatActivity() {
                 // Show only admin, reporter, and editor roles
                 if (role == "admin" || role == "reporter" || role == "editor") {
                     userList.add(Pair(userId, email))  // Add userId and email to the list
-                    userRoles[userId] = role          // Store the role with userId as the key
+                    userRoles[userId] = role  // Store the role with userId as the key
                 }
             }
 
@@ -125,7 +125,7 @@ class AdminActivity : AppCompatActivity() {
                     userEmailTextView?.text = user.second // Set email
                     userRoleTextView?.text = userRoles[user.first] // Get and set role based on userId
                     deleteButton?.setOnClickListener {
-                        deleteUser(user.first)  // pass userId to delete user
+                        deleteUser(user.first)  // Pass userId to delete user
                     }
 
                     return view!!
