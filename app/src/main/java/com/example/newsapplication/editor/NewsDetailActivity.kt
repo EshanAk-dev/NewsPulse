@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.example.newsapplication.News
 import com.example.newsapplication.R
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -122,20 +123,56 @@ class NewsDetailActivity : AppCompatActivity() {
                 .setPositiveButton("Yes") { _, _ ->
                     news?.let {
                         val newsRef = FirebaseDatabase.getInstance().getReference("news")
-                        newsRef.child(it.newsId).removeValue()
-                            .addOnSuccessListener {
-                                Toast.makeText(this, "News deleted successfully", Toast.LENGTH_SHORT).show()
-                                finish()
-                            }
-                            .addOnFailureListener {
-                                Toast.makeText(this, "Failed to delete news", Toast.LENGTH_SHORT).show()
-                            }
+                        val newsId = it.newsId
+                        val imageUrl = it.imageUrl // Get image URL of the news
+
+                        // Delete the image from Firebase Storage if it exists
+                        if (imageUrl.isNotEmpty()) {
+                            val storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(imageUrl)
+                            storageReference.delete()
+                                .addOnSuccessListener {
+                                    // If image deletion is successful, delete the news from Realtime Database
+                                    newsRef.child(newsId).removeValue()
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "News and image deleted successfully", Toast.LENGTH_SHORT).show()
+                                            finish()
+                                        }
+                                        .addOnFailureListener {
+                                            Toast.makeText(this, "Failed to delete news from database", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                                .addOnFailureListener {
+                                    // If deleting the image fails, still delete the news
+                                    Toast.makeText(this, "Failed to delete image from storage", Toast.LENGTH_SHORT).show()
+
+                                    // Proceed to delete the news from the database
+                                    newsRef.child(newsId).removeValue()
+                                        .addOnSuccessListener {
+                                            Toast.makeText(this, "News deleted successfully, but image deletion failed", Toast.LENGTH_SHORT).show()
+                                            finish()
+                                        }
+                                        .addOnFailureListener {
+                                            Toast.makeText(this, "Failed to delete news from database", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                        } else {
+                            // If there is no image associated, just delete the news from database
+                            newsRef.child(newsId).removeValue()
+                                .addOnSuccessListener {
+                                    Toast.makeText(this, "News deleted successfully", Toast.LENGTH_SHORT).show()
+                                    finish()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(this, "Failed to delete news from database", Toast.LENGTH_SHORT).show()
+                                }
+                        }
                     }
                 }
                 .setNegativeButton("No", null)
                 .create()
             alertDialog.show()
         }
+
     }
 }
 
