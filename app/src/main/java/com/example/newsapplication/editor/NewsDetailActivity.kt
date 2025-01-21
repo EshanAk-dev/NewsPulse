@@ -45,7 +45,7 @@ class NewsDetailActivity : AppCompatActivity() {
         btnPublish = findViewById(R.id.btn_Publish)
         btnEdit = findViewById(R.id.btn_Edit)
         btnDelete = findViewById(R.id.btn_Delete)
-        tvPublishTime = findViewById(R.id.tv_PublishTime) // Initialize the new TextView
+        tvPublishTime = findViewById(R.id.tv_PublishTime)
 
         // Retrieve the news object passed from the previous activity
         news = intent.getSerializableExtra("news") as? News
@@ -70,7 +70,7 @@ class NewsDetailActivity : AppCompatActivity() {
                 // Format the timestamp to a readable date/time
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 val formattedDate = dateFormat.format(Date(it.timestamp))
-                tvPublishTime.text = "Published at: $formattedDate"
+                tvPublishTime.text = "Published on: $formattedDate"
             } else {
                 tvPublishTime.text = "Not published yet"
             }
