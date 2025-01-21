@@ -5,7 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item> <!-- Accent color -->
-        <item name="android:colorBackground">#FFFFFF</item> <!-- Light gray background -->
+        <item name="android:colorBackground">#F5F5F5</item> <!-- Light gray background -->
     </style>
 
     <style name="Theme.NewsApplication" parent="Base.Theme.NewsApplication" />
