@@ -59,7 +59,7 @@ class LoginActivity : AppCompatActivity() {
                             }
                     }
                 } else {
-                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Wrong email or password", Toast.LENGTH_SHORT).show()
                 }
             }
         }
