@@ -16,9 +16,11 @@ class AdminActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
+
     private lateinit var roleSpinner: Spinner
     private lateinit var usersListView: ListView
     private lateinit var usersListAdapter: ArrayAdapter<Pair<String, String>> // Stores email and UID
+
     private val userList = mutableListOf<Pair<String, String>>() // email and UID
     private val userRoles = mutableMapOf<String, String>() // Mapping userId to their role
 
@@ -30,6 +32,7 @@ class AdminActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         database = FirebaseDatabase.getInstance()
 
+        // Initialize UI elements
         val newUserEmailEditText = findViewById<EditText>(R.id.et_newUserEmail)
         val newUserPasswordEditText = findViewById<EditText>(R.id.et_newUserPassword)
         val addUserButton = findViewById<Button>(R.id.btn_addUser)
@@ -46,10 +49,12 @@ class AdminActivity : AppCompatActivity() {
 
         // Add New User Button Click
         addUserButton.setOnClickListener {
+            // Get inputs
             val email = newUserEmailEditText.text.toString().trim()
             val password = newUserPasswordEditText.text.toString().trim()
             val role = roleSpinner.selectedItem.toString()
 
+            // Check inputs
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Fields cannot be empty", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
@@ -60,6 +65,7 @@ class AdminActivity : AppCompatActivity() {
             auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val userId = task.result?.user?.uid
+
                     if (userId != null) {
                         // Set the user role in the Firebase Database
                         val userMap = mapOf("email" to email, "role" to role)
@@ -67,7 +73,8 @@ class AdminActivity : AppCompatActivity() {
                             .addOnCompleteListener { dbTask ->
                                 if (dbTask.isSuccessful) {
                                     Toast.makeText(this, "User Added Successfully", Toast.LENGTH_SHORT).show()
-                                    fetchAllUsers()
+                                    fetchAllUsers() // To refresh user list
+                                    //Clear edit texts
                                     newUserEmailEditText.setText("")
                                     newUserPasswordEditText.setText("")
                                     auth.signOut()
@@ -144,13 +151,6 @@ class AdminActivity : AppCompatActivity() {
         builder.setMessage("Are you sure you want to delete this user?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, _ ->
-                // Check if trying to delete the currently authenticated user
-                val currentUser = FirebaseAuth.getInstance().currentUser
-                if (currentUser?.uid == userId) {
-                    Toast.makeText(this, "You cannot delete your own account", Toast.LENGTH_SHORT).show()
-                    return@setPositiveButton
-                }
-
                 // Proceed to delete the user from Firebase Database
                 database.reference.child("users").child(userId).removeValue()
                     .addOnSuccessListener {
