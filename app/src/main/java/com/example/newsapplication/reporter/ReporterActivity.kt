@@ -141,10 +141,10 @@ class ReporterActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("Do you want to logout?")
+        builder.setMessage("Do you want to exit?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, _ ->
-                logoutUser()
+                exitApp()
             }
             .setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
@@ -159,6 +159,12 @@ class ReporterActivity : AppCompatActivity() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        finish()
+    }
+
+    // Exit function
+    private fun exitApp() {
+        auth.signOut()
         finish()
     }
 }
