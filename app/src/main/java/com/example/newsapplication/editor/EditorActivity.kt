@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapplication.LoginActivity
-import com.example.newsapplication.MainActivity
 import com.example.newsapplication.News
 import com.example.newsapplication.NewsAdapter
 import com.example.newsapplication.R
@@ -108,10 +107,6 @@ class EditorActivity : AppCompatActivity() {
                 publishedNewsAdapter.notifyDataSetChanged()
                 draftNewsAdapter.notifyDataSetChanged()
 
-                // Adjust the height of the RecyclerViews based on the number of items
-                adjustRecyclerViewHeight(publishedRecyclerView, publishedNewsList.size)
-                adjustRecyclerViewHeight(draftRecyclerView, draftNewsList.size)
-
                 // Hide RecyclerViews if there are no items
                 if (publishedNewsList.isEmpty()) {
                     publishedRecyclerView.visibility = RecyclerView.GONE
@@ -132,35 +127,19 @@ class EditorActivity : AppCompatActivity() {
         })
     }
 
-    // Function to adjust the height of the RecyclerView based on the number of items
-    private fun adjustRecyclerViewHeight(recyclerView: RecyclerView, itemCount: Int) {
-        val itemHeight = recyclerView.getChildAt(0)?.height ?: 0 // Get the height of a single item
-        val twoItemsHeight = itemHeight * 2  // Height for 2 items
 
-        // Set the height of the RecyclerView to show at least 2 items (no scroll)
-        val layoutParams = recyclerView.layoutParams
-        layoutParams.height = when {
-            itemCount > 1 -> twoItemsHeight  // Show 2 items without scroll
-            itemCount > 0 -> itemHeight // Show as many items as available
-            else -> 0 // No items to show
-        }
-        recyclerView.layoutParams = layoutParams
-
-        // Set up scrolling for more than 2 items
-        recyclerView.isNestedScrollingEnabled = itemCount > 2
-    }
 
     // Override the back button press to show a confirmation dialog
     override fun onBackPressed() {
         // Create a confirmation dialog
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("Do you want to logout?")
+        builder.setMessage("Do you want to exit?")
             .setCancelable(false)
-            .setPositiveButton("Yes") { dialog, id ->
+            .setPositiveButton("Yes") { _, _ ->
                 // Logout and go to LoginActivity
-                logoutUser()
+                exitApp()
             }
-            .setNegativeButton("No") { dialog, id ->
+            .setNegativeButton("No") { dialog, _ ->
                 // Dismiss the dialog, do nothing
                 dialog.dismiss()
             }
@@ -174,6 +153,12 @@ class EditorActivity : AppCompatActivity() {
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        finish()
+    }
+
+    // Exit function
+    private fun exitApp() {
+        auth.signOut()
         finish()
     }
 }
