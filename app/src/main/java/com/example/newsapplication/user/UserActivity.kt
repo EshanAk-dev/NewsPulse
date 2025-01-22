@@ -76,11 +76,11 @@ class UserActivity : AppCompatActivity() {
     override fun onBackPressed() {
         // Create a confirmation dialog
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("Do you want to logout?")
+        builder.setMessage("Do you want to exit?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, _ ->
-                // Logout and go to LoginActivity
-                logoutUser()
+                // Exit App
+                exitApp()
             }
             .setNegativeButton("No") { dialog, _ ->
                 // Dismiss the dialog, do nothing
@@ -91,11 +91,18 @@ class UserActivity : AppCompatActivity() {
         alert.show()
     }
 
+    // Logout Function
     private fun logoutUser() {
         auth.signOut()
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
+        finish()
+    }
+
+    // Exit function
+    private fun exitApp() {
+        auth.signOut()
         finish()
     }
 }
