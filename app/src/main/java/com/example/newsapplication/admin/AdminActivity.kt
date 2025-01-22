@@ -176,7 +176,7 @@ class AdminActivity : AppCompatActivity() {
         builder.setMessage("Do you want to exit?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, _ ->
-                // Logout and go to LoginActivity
+                // Exit App
                 exitApp()
             }
             .setNegativeButton("No") { dialog, _ ->
