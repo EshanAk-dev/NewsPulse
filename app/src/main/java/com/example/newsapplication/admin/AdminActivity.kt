@@ -105,7 +105,7 @@ class AdminActivity : AppCompatActivity() {
                 // Show only admin, reporter, and editor roles
                 if (role == "admin" || role == "reporter" || role == "editor") {
                     userList.add(Pair(userId, email))  // Add userId and email to the list
-                    userRoles[userId] = role  // Store the role with userId as the key
+                    userRoles[userId] = role          // Store the role with userId as the key
                 }
             }
 
@@ -125,7 +125,7 @@ class AdminActivity : AppCompatActivity() {
                     userEmailTextView?.text = user.second // Set email
                     userRoleTextView?.text = userRoles[user.first] // Get and set role based on userId
                     deleteButton?.setOnClickListener {
-                        deleteUser(user.first)  // Pass userId to delete user
+                        deleteUser(user.first)  // pass userId to delete user
                     }
 
                     return view!!
@@ -143,7 +143,7 @@ class AdminActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setMessage("Are you sure you want to delete this user?")
             .setCancelable(false)
-            .setPositiveButton("Yes") { dialog, id ->
+            .setPositiveButton("Yes") { _, _ ->
                 // Check if trying to delete the currently authenticated user
                 val currentUser = FirebaseAuth.getInstance().currentUser
                 if (currentUser?.uid == userId) {
@@ -161,7 +161,7 @@ class AdminActivity : AppCompatActivity() {
                         Toast.makeText(this, "Failed to Delete User from Database", Toast.LENGTH_SHORT).show()
                     }
             }
-            .setNegativeButton("No") { dialog, id ->
+            .setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
 
@@ -173,13 +173,13 @@ class AdminActivity : AppCompatActivity() {
     override fun onBackPressed() {
         // Create a confirmation dialog
         val builder = AlertDialog.Builder(this)
-        builder.setMessage("Do you want to logout?")
+        builder.setMessage("Do you want to exit?")
             .setCancelable(false)
-            .setPositiveButton("Yes") { dialog, id ->
+            .setPositiveButton("Yes") { _, _ ->
                 // Logout and go to LoginActivity
-                logoutUser()
+                exitApp()
             }
-            .setNegativeButton("No") { dialog, id ->
+            .setNegativeButton("No") { dialog, _ ->
                 // Dismiss the dialog, do nothing
                 dialog.dismiss()
             }
@@ -193,6 +193,12 @@ class AdminActivity : AppCompatActivity() {
         auth.signOut()
         startActivity(Intent(this, LoginActivity::class.java))
         Toast.makeText(this, "Logout Successfully", Toast.LENGTH_SHORT).show()
+        finish()
+    }
+
+    // Exit function
+    private fun exitApp() {
+        auth.signOut()
         finish()
     }
 }
