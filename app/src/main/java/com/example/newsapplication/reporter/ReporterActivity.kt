@@ -1,152 +1,97 @@
 package com.example.newsapplication.reporter
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.widget.*
+import android.widget.Button
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.example.newsapplication.DividerSpinnerAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.newsapplication.LoginActivity
 import com.example.newsapplication.News
+import com.example.newsapplication.NewsAdapter
 import com.example.newsapplication.R
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.storage.FirebaseStorage
-import java.util.*
+import com.google.firebase.database.*
 
 class ReporterActivity : AppCompatActivity() {
 
-    private lateinit var etTitle: EditText
-    private lateinit var spinnerCategory: Spinner
-    private lateinit var etDescription: EditText
-    private lateinit var btnUploadImage: Button
-    private lateinit var imgPreview: ImageView
-    private lateinit var btnSubmit: Button
+    // Declare variables for UI components
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: NewsAdapter
+    private lateinit var newsList: MutableList<News>
+    private lateinit var btnAddNews: Button
     private lateinit var logoutButton: Button
-    private var selectedImageUri: Uri? = null
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
-    private val storage: FirebaseStorage = FirebaseStorage.getInstance()
-
-    // Select an image from device
-    private val selectImage =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                selectedImageUri = it
-                imgPreview.setImageURI(it)
-            }
-        }
+    private val database: DatabaseReference = FirebaseDatabase.getInstance().getReference("news")
+    private val currentUserEmail = auth.currentUser?.email
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_reporter)
 
-        // Initialize views
-        etTitle = findViewById(R.id.et_Title)
-        spinnerCategory = findViewById(R.id.spinnerCategory)
-        etDescription = findViewById(R.id.et_Description)
-        btnUploadImage = findViewById(R.id.btn_UploadImage)
-        imgPreview = findViewById(R.id.img_Preview)
-        btnSubmit = findViewById(R.id.btn_Submit)
+        recyclerView = findViewById(R.id.recyclerView)
+        btnAddNews = findViewById(R.id.btn_add_news)
         logoutButton = findViewById(R.id.btn_logout)
 
-        // Set up the Spinner with categories
-        val categories = arrayOf("Local", "International", "Business", "Sports", "Science", "Technology", "Entertainment", "Lifestyle")
-        val adapter = DividerSpinnerAdapter(this, R.layout.spinner_item_with_divider, categories) // Use the custom DividerSpinnerAdapter for the Spinner
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        newsList = mutableListOf()
+        adapter = NewsAdapter(newsList, "reporter") { news -> openNewsDetails(news) }
+        recyclerView.adapter = adapter
 
-        spinnerCategory.adapter = adapter // Set the adapter to the Spinner
-
-        // Setup Upload Image button
-        btnUploadImage.setOnClickListener {
-            selectImage.launch("image/*")
-        }
-
-        // Set click listener with dialog box for Submit Button
-        btnSubmit.setOnClickListener {
-            val builder = AlertDialog.Builder(this)
-            builder.setMessage("Are you sure you want to submit this news?")
-                .setCancelable(false)
-                .setPositiveButton("Yes") { _, _ ->
-                    val title = etTitle.text.toString().trim()
-                    val category = spinnerCategory.selectedItem.toString()
-                    val description = etDescription.text.toString().trim()
-
-                    if (title.isNotEmpty() && category.isNotEmpty() && description.isNotEmpty() && selectedImageUri != null) {
-                        uploadNewsToFirebase(title, category, description)
-                    } else {
-                        Toast.makeText(this, "Please fill all fields and select an image", Toast.LENGTH_SHORT).show()
-                    }
-                }
-                .setNegativeButton("No") { dialog, _ ->
-                    dialog.dismiss()
-                }
-            val alert = builder.create()
-            alert.show()
+        btnAddNews.setOnClickListener {
+            val intent = Intent(this, AddNewsActivity::class.java)
+            startActivity(intent)
         }
 
         logoutButton.setOnClickListener {
             logoutUser()
         }
+
+        loadReporterNews()
     }
 
-    // Upload news image to firebase storage and save news details
-    private fun uploadNewsToFirebase(title: String, category: String, description: String) {
-        val newsRef = storage.reference.child("news_images/${UUID.randomUUID()}.jpg") // Use UUID to name the image
-
-        val uploadTask = selectedImageUri?.let {
-            newsRef.putFile(it)
-        }
-        uploadTask?.addOnSuccessListener {
-            newsRef.downloadUrl.addOnSuccessListener { uri ->
-                val imageUrl = uri.toString()
-
-                val reporterEmail = auth.currentUser?.email ?: "unknown"
-
-                val newsDatabaseRef = FirebaseDatabase.getInstance().getReference("news")
-                val newsId = newsDatabaseRef.push().key ?: UUID.randomUUID().toString()
-
-                val newsData = News(title, category, description, imageUrl, newsId, reporterEmail)
-                saveNewsToDatabase(newsData, newsId)
+    // Load news for reporter submitted by him
+    private fun loadReporterNews() {
+        database.orderByChild("reporterEmail").equalTo(currentUserEmail).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                newsList.clear()
+                for (newsSnapshot in snapshot.children) {
+                    val news = newsSnapshot.getValue(News::class.java)
+                    news?.let { newsList.add(it) }
+                }
+                adapter.notifyDataSetChanged()
             }
-        }?.addOnFailureListener {
-            Toast.makeText(this, "Image upload failed", Toast.LENGTH_SHORT).show()
-        }
-    }
 
-    // Upload news object to firebase database
-    private fun saveNewsToDatabase(news: News, newsId: String) {
-        val newsRef = FirebaseDatabase.getInstance().getReference("news")
-
-        newsRef.child(newsId).setValue(news)
-            .addOnSuccessListener {
-                Toast.makeText(this, "News uploaded successfully", Toast.LENGTH_SHORT).show()
-                clearFields()
+            override fun onCancelled(error: DatabaseError) {
+                Toast.makeText(this@ReporterActivity, "Failed to load news", Toast.LENGTH_SHORT).show()
             }
-            .addOnFailureListener {
-                Toast.makeText(this, "Failed to upload news", Toast.LENGTH_SHORT).show()
-            }
+        })
     }
 
-    private fun clearFields() {
-        etTitle.text.clear()
-        spinnerCategory.setSelection(0)
-        etDescription.text.clear()
-        imgPreview.setImageResource(0)
-        selectedImageUri = null
+    // Open ReporterNewsDetailsActivity
+    private fun openNewsDetails(news: News) {
+        val intent = Intent(this, ReporterNewsDetailsActivity::class.java)
+        intent.putExtra("news", news)
+        startActivity(intent)
     }
 
+    // Override the back button press to show a confirmation dialog
     override fun onBackPressed() {
+        // Create a confirmation dialog
         val builder = AlertDialog.Builder(this)
         builder.setMessage("Do you want to exit?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, _ ->
+                // Exit App
                 exitApp()
             }
             .setNegativeButton("No") { dialog, _ ->
+                // Dismiss the dialog, do nothing
                 dialog.dismiss()
             }
 
@@ -156,8 +101,8 @@ class ReporterActivity : AppCompatActivity() {
 
     private fun logoutUser() {
         auth.signOut()
-        val intent = Intent(this, LoginActivity::class.java)
-        startActivity(intent)
+        startActivity(Intent(this, LoginActivity::class.java))
+        Toast.makeText(this, "Logout Successfully", Toast.LENGTH_SHORT).show()
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
         finish()
     }
