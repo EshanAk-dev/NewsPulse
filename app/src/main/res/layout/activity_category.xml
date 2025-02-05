@@ -4,26 +4,23 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp"
     tools:context=".user.CategoryActivity">
 
+    <!-- News Category Title -->
     <TextView
         android:id="@+id/tv_categoryTitle"
         android:textSize="24sp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/white"
         android:textStyle="bold"
+        android:textAlignment="center"
         android:fontFamily="sans-serif-medium"
         android:textAllCaps="true"
-        android:layout_marginTop="25dp"
-        android:layout_marginBottom="12dp"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:shadowColor="@android:color/darker_gray"
-        android:shadowDx="2"
-        android:shadowDy="2"
-        android:shadowRadius="3"
-        android:padding="10dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:paddingTop="50dp"
+        android:paddingBottom="10dp"
         android:background="@drawable/title_border"
         android:elevation="4dp"
         android:translationZ="2dp" />
