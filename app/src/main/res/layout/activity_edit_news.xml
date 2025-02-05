@@ -11,7 +11,7 @@
     <TextView
         android:id="@+id/tv_main"
         android:text="Edit News"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textColor="@color/colorPrimary"
         android:textStyle="bold"
         android:layout_marginTop="20dp"
