@@ -4,26 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
     tools:context=".editor.EditorActivity">
 
     <TextView
         android:text="Editor Section"
         android:textSize="24sp"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/white"
         android:textStyle="bold"
         android:textAllCaps="true"
         android:fontFamily="sans-serif-medium"
-        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/colorPrimary"
         android:layout_marginBottom="20dp"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:shadowColor="@android:color/darker_gray"
-        android:shadowDx="2"
-        android:shadowDy="2"
         android:shadowRadius="3"
-        android:padding="10dp"
+        android:textAlignment="center"
+        android:paddingTop="50dp"
+        android:paddingBottom="10dp"
         android:background="@drawable/title_border"
         android:elevation="4dp"
         android:translationZ="2dp"/>
@@ -36,7 +34,7 @@
         android:text="Ongoing News"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginLeft="10dp" />
 
     <!-- RecyclerView for Ongoing (Draft) News -->
     <androidx.recyclerview.widget.RecyclerView
@@ -44,7 +42,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginBottom="16dp" />
+        android:layout_margin="10dp" />
 
     <!-- Title for Published News -->
     <TextView
@@ -54,7 +52,7 @@
         android:text="Published News"
         android:textSize="18sp"
         android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginLeft="10dp" />
 
     <!-- RecyclerView for Published News -->
     <androidx.recyclerview.widget.RecyclerView
@@ -62,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginBottom="16dp" />
+        android:layout_margin="10dp" />
 
     <!-- Logout Button -->
     <Button
@@ -70,6 +68,6 @@
         android:text="Logout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" />
+        android:layout_margin="10dp" />
 
 </LinearLayout>
